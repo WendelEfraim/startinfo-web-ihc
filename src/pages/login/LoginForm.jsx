@@ -1,7 +1,9 @@
 
 
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import AuthPacienteService from "../../services/AuthPaciente.service.ts";
+import { notifyError, notifySuccess } from "../../utils/Util.js";
 
 import whatsapp from "../../assets/whatsapp.ico"; 
 
@@ -19,6 +21,8 @@ export default function LoginForm() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+
+  const navigate = useNavigate();
 
   // Função para validar o e-mail
   const validateEmail = (email) => {
@@ -48,6 +52,26 @@ export default function LoginForm() {
     setErrorMessage('');
     console.log('Username:', username);
     console.log('Password:', password);
+  };
+
+  const  Login = async (event) => {
+    event.preventDefault();
+
+    let authData = {
+      username,
+      password,
+    };
+
+    try {
+      const response = await AuthPacienteService.login(authData);
+      notifySuccess("Usuário autenticado com sucesso!", response);
+      navigate('/')
+      // Aqui você pode redirecionar o usuário ou atualizar o estado
+    } catch (err) {
+      
+      notifyError("Falha ao autenticar: " + err.message);
+    }
+    
   };
 
   const handleForgotPassword = () => {
@@ -111,7 +135,7 @@ export default function LoginForm() {
           {errorMessage && <div className="error-message">{errorMessage}</div>}
 
           <div className="input-group">
-            <button type="submit" className="buttonLogin">ENTRAR</button>
+            <button onClick={(event) => Login(event)} type="submit" className="buttonLogin">ENTRAR</button>
           </div>
 
           <div className="forgot-password">

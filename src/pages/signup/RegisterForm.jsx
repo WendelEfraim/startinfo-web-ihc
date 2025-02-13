@@ -2,6 +2,7 @@
 import axios from "axios";
 import React, { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
+import { notifyError, notifySuccess } from "../../utils/Util.js";
 
 import whatsapp from "../../assets/whatsapp.ico"; 
 
@@ -39,7 +40,7 @@ export default function RegisterForm() {
 	
 		axios.post("http://localhost:8085/api/cliente", clienteRequest)
 		.then((response) => {
-		     console.log('Cliente cadastrado com sucesso!', response);
+      notifySuccess('Cliente cadastrado com sucesso!', response);
 
         // Limpar os campos do formulário
         setNomeCompleto('');
@@ -53,7 +54,7 @@ export default function RegisterForm() {
         })
 
 		.catch((error) => {
-		     console.log('Erro ao incluir o um cliente!', error)
+      notifyError('Erro ao incluir o um cliente!', error)
 		})
 	}
 
